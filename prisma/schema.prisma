@@ -2,7 +2,76 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  avatarUrl String?
+  password  String
+  createdAt DateTime @default(now())
+
+  ownRoles         Role[]
+  ownRooms         Room[]
+  ownTracks        Track[]
+  participantingAt Paticipant[]
+}
+
+model Room {
+  id       String  @id @default(uuid())
+  title    String
+  password String?
+  ownerId  String
+
+  owner        User         @relation(fields: [ownerId], references: [id])
+  trackQueue   Queue[]
+  participants Paticipant[]
+}
+
+model Paticipant {
+  id String @id @default(uuid())
+
+  userId String
+  roomId String
+
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@unique([userId, roomId])
+}
+
+model Queue {
+  id     String @id @default(uuid())
+  roomId String
+
+  tracks Track[]
+  room   Room    @relation(fields: [roomId], references: [id])
+}
+
+model Track {
+  id    String @id @default(uuid())
+  title String
+  url   String
+
+  ownerId String
+  queueId String
+
+  owner    User  @relation(fields: [ownerId], references: [id])
+  ownQueue Queue @relation(fields: [queueId], references: [id])
+}
+
+model Role {
+  id    String @id @default(uuid())
+  title String
+
+  ownerId String
+  user    User   @relation(fields: [ownerId], references: [id])
 }
