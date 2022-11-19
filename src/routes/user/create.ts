@@ -42,15 +42,15 @@ const create = async ({ request, reply }: CreateProps): Promise<void> => {
 			])
 
 		if (userExists) {
-			return reply.status(409).send({ message: 'User already exist!' })
+			return reply.status(409).send(new Error('User already exist!'))
 		}
 
 		if (usernameAlreadyRegistered) {
-			return reply.status(409).send({ message: 'Username already registered!' })
+			return reply.status(409).send(new Error('Username already registered!'))
 		}
 
 		if (emailAlreadyRegistered) {
-			return reply.status(409).send({ message: 'Email already registered!' })
+			return reply.status(409).send(new Error('Email already registered!'))
 		}
 
 		await prisma.user.create({
@@ -59,6 +59,7 @@ const create = async ({ request, reply }: CreateProps): Promise<void> => {
 
 		return reply.status(201).send({ user })
 	} catch (error) {
+		console.log(error)
 		throw new Error('Error on create a new user!')
 	}
 }
