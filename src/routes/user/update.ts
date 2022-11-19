@@ -12,14 +12,18 @@ const update = async ({ request, reply }: UpdateProps): Promise<void> => {
 	const updateUserBody = z.object({
 		name: z.string().optional(),
 		username: z.string().optional(),
-		email: z.string({}).email().optional(),
+		email: z.string().email().optional(),
 		avatarUrl: z.string().url().optional(),
 		password: z.string().optional()
 	})
 
+	const userIdParams = z.object({
+		userId: z.string()
+	})
+
 	try {
 		const user = updateUserBody.parse(request.body)
-		const { userId } = request.params as { userId: string }
+		const { userId } = userIdParams.parse(request.params)
 
 		if (isObjectEmpty(user)) {
 			return reply
