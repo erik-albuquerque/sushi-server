@@ -12,66 +12,61 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  avatarUrl String?
-  password  String
-  createdAt DateTime @default(now())
-
+  id               String       @id @default(uuid())
+  name             String
+  username         String
+  email            String
+  avatarUrl        String?
+  password         String
+  createdAt        DateTime     @default(now())
+  participantingAt Paticipant[]
   ownRoles         Role[]
   ownRooms         Room[]
   ownTracks        Track[]
-  participantingAt Paticipant[]
+
+  @@unique([username, email])
 }
 
 model Room {
-  id       String  @id @default(uuid())
-  title    String
-  password String?
-  ownerId  String
-
+  id           String       @id @default(uuid())
+  title        String
+  password     String?
+  ownerId      String
   owner        User         @relation(fields: [ownerId], references: [id])
-  trackQueue   Queue[]
   participants Paticipant[]
+  trackQueue   Queue[]
 }
 
 model Paticipant {
-  id String @id @default(uuid())
-
+  id     String @id @default(uuid())
   userId String
   roomId String
-
-  user User @relation(fields: [userId], references: [id])
-  room Room @relation(fields: [roomId], references: [id])
+  room   Room   @relation(fields: [roomId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@unique([userId, roomId])
 }
 
 model Queue {
-  id     String @id @default(uuid())
+  id     String  @id @default(uuid())
   roomId String
-
-  tracks Track[]
   room   Room    @relation(fields: [roomId], references: [id])
+  tracks Track[]
 }
 
 model Track {
-  id    String @id @default(uuid())
-  title String
-  url   String
-
-  ownerId String
-  queueId String
-
-  owner    User  @relation(fields: [ownerId], references: [id])
-  ownQueue Queue @relation(fields: [queueId], references: [id])
+  id       String @id @default(uuid())
+  title    String
+  url      String
+  ownerId  String
+  queueId  String
+  ownQueue Queue  @relation(fields: [queueId], references: [id])
+  owner    User   @relation(fields: [ownerId], references: [id])
 }
 
 model Role {
-  id    String @id @default(uuid())
-  title String
-
+  id      String @id @default(uuid())
+  title   String
   ownerId String
   user    User   @relation(fields: [ownerId], references: [id])
 }

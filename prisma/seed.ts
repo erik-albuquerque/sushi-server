@@ -7,6 +7,7 @@ const main = async () => {
 		data: {
 			name: 'John DOe',
 			email: 'johndoe@gmail.com',
+			username: 'johndoe',
 			// avatarUrl: '',
 			password: '12345678',
 			ownRoles: {
