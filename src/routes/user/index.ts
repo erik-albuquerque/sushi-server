@@ -4,6 +4,7 @@ import { apiPrefix } from '../../utils/apiPrefix'
 
 import { create } from './create'
 import { onDelete } from './delete'
+import { get } from './get'
 import { update } from './update'
 
 const routes = async (
@@ -12,6 +13,10 @@ const routes = async (
 ) => {
 	server.post(`${apiPrefix}/users`, (request, reply) =>
 		create({ request, reply })
+	)
+
+	server.get(`${apiPrefix}/users/:userId`, (request, reply) =>
+		get({ request, reply })
 	)
 
 	server.patch(`${apiPrefix}/users/edit/:userId`, (request, reply) =>
