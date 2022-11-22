@@ -12,14 +12,14 @@ datasource db {
 }
 
 model User {
-  id               String       @id @default(uuid())
+  id               String        @id @default(uuid())
   name             String
   username         String
   email            String
   avatarUrl        String?
   password         String
-  createdAt        DateTime     @default(now())
-  participantingAt Paticipant[]
+  createdAt        DateTime      @default(now())
+  participantingAt Participant[]
   ownRoles         Role[]
   ownRooms         Room[]
   ownTracks        Track[]
@@ -28,16 +28,16 @@ model User {
 }
 
 model Room {
-  id           String       @id @default(uuid())
+  id           String        @id @default(uuid())
   title        String
   password     String?
   ownerId      String
-  owner        User         @relation(fields: [ownerId], references: [id])
-  participants Paticipant[]
+  owner        User          @relation(fields: [ownerId], references: [id])
+  participants Participant[]
   trackQueue   Queue[]
 }
 
-model Paticipant {
+model Participant {
   id     String @id @default(uuid())
   userId String
   roomId String
