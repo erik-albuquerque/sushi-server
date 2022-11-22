@@ -8,7 +8,12 @@ type GetAllProps = {
 
 const getAll = async ({ request, reply }: GetAllProps) => {
 	try {
-		const rooms = await prisma.room.findMany()
+		const rooms = await prisma.room.findMany({
+			include: {
+				participants: true,
+				trackQueue: true
+			}
+		})
 
 		if (!rooms) {
 			return reply.status(400).send(new Error('Rooms not found!'))
