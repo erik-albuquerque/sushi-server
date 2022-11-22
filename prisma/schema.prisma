@@ -19,6 +19,7 @@ model User {
   avatarUrl        String?
   password         String
   createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now())
   participantingAt Participant[]
   ownRoles         Role[]
   ownRooms         Room[]
@@ -31,6 +32,8 @@ model Room {
   id           String        @id @default(uuid())
   title        String
   password     String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now())
   ownerId      String
   owner        User          @relation(fields: [ownerId], references: [id])
   participants Participant[]
