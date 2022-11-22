@@ -1,6 +1,6 @@
 import cors from '@fastify/cors'
 import Fastify from 'fastify'
-import { userRoutes } from './routes'
+import { roomRoutes, userRoutes } from './routes'
 
 const fastify = Fastify({
 	logger: true
@@ -21,6 +21,8 @@ const bootstrap = async () => {
 	})
 
 	fastify.register(userRoutes)
+
+	fastify.register(roomRoutes)
 
 	initServer()
 }
