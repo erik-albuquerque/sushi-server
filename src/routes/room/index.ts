@@ -4,6 +4,7 @@ import { apiPrefix } from '../../utils/apiPrefix'
 
 import { create } from './create'
 import { get } from './get'
+import { getAll } from './getAll'
 
 const routes = async (
 	server: FastifyInstance
@@ -14,6 +15,9 @@ const routes = async (
 	)
 	server.get(`${apiPrefix}/rooms/:roomId`, (request, reply) =>
 		get({ request, reply })
+	)
+	server.get(`${apiPrefix}/rooms`, (request, reply) =>
+		getAll({ request, reply })
 	)
 }
 
