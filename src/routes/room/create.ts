@@ -45,6 +45,12 @@ const create = async ({ request, reply }: RouterProps) => {
 			}
 		})
 
+		await prisma.queue.create({
+			data: {
+				roomId: room.id
+			}
+		})
+
 		return reply.status(201).send(room)
 	} catch (error) {
 		console.log(error)
