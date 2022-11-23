@@ -3,10 +3,15 @@ import fp from 'fastify-plugin'
 import { apiPrefix } from '../../utils'
 
 import { create } from './create'
+import { get } from './get'
 
 const routes = async (server: FastifyInstance) => {
 	server.post(`${apiPrefix}/participants/:userId/:roomId`, (request, reply) =>
 		create({ request, reply })
+	)
+
+	server.get(`${apiPrefix}/participants/:roomId`, (request, reply) =>
+		get({ request, reply })
 	)
 }
 
