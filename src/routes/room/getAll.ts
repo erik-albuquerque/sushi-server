@@ -1,12 +1,16 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { prisma } from '../../lib/prisma'
+import { RoomPropsUserWithRole, UserWithRole } from '../../types'
+import { userWithoutPassword, userWithRole } from '../../utils'
 
 type GetAllProps = {
 	request: FastifyRequest
 	reply: FastifyReply
 }
 
-const getAll = async ({ request, reply }: GetAllProps) => {
+const getAll = async ({ reply }: GetAllProps) => {
+	const rooms: RoomPropsUserWithRole[] = []
+
 	try {
 		const roomsData = await prisma.room.findMany({
 			include: {
@@ -20,12 +24,10 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 			return reply.status(400).send(new Error('Rooms not found!'))
 		}
 
-		const rooms = []
-
-		for (const room of roomsData) {
+		for (const roomData of roomsData) {
 			const ownerData = await prisma.user.findUnique({
 				where: {
-					id: room.ownerId
+					id: roomData.ownerId
 				}
 			})
 
@@ -33,7 +35,7 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 				where: {
 					participatingAt: {
 						some: {
-							roomId: room.id
+							roomId: roomData.id
 						}
 					}
 				}
@@ -41,40 +43,23 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 
 			const userRole = await prisma.role.findFirst({
 				where: {
-					ownerId: room.ownerId
+					ownerId: roomData.ownerId
 				}
 			})
 
-			const users = usersData.map((user) => {
-				if (user.username === ownerData?.username) {
-					return {
-						id: user.id,
-						name: user.name,
-						username: user.username,
-						avatarUrl: user.avatarUrl,
-						role: userRole?.title,
-						createdAt: user.createdAt,
-						updatedAt: user.updatedAt
-					}
+			const participants = usersData.map((user) => {
+				if (userRole) {
+					return userWithRole(userRole.title, userWithoutPassword(user))
 				} else {
-					return {
-						id: user.id,
-						name: user.name,
-						username: user.username,
-						avatarUrl: user.avatarUrl,
-						createdAt: user.createdAt,
-						updatedAt: user.updatedAt
-					}
+					return user
 				}
 			})
 
 			const queue = await prisma.queue.findFirst({
 				where: {
-					roomId: room.id
+					roomId: roomData.id
 				}
 			})
-
-			// if (!queue) return reply.status(400).send(new Error('Queue not found!'))
 
 			const tracks = await prisma.track.findMany({
 				where: {
@@ -82,28 +67,28 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 				}
 			})
 
-			const owner = {
-				id: ownerData?.id,
-				name: ownerData?.name,
-				username: ownerData?.username,
-				avatarUrl: ownerData?.avatarUrl,
-				role: userRole?.title,
-				createdAt: ownerData?.createdAt,
-				updatedAt: ownerData?.updatedAt
+			if (!userRole) {
+				continue
 			}
 
-			rooms.push({
-				id: room.id,
-				title: room.title,
-				ownerId: room.ownerId,
-				// password: room.password,
-				createdAt: room.createdAt,
-				updatedAt: room.updatedAt,
+			if (!ownerData) {
+				return
+			}
+
+			const owner: UserWithRole = {
+				...userWithoutPassword(ownerData),
+				role: userRole.title
+			}
+
+			const room = {
+				...roomData,
 				owner,
-				participants: users,
+				participants,
 				queue,
 				tracks
-			})
+			}
+
+			rooms.push(room)
 		}
 
 		return reply.status(200).send(rooms)

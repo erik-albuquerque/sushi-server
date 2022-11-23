@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
+import { userWithoutPassword } from '../../utils'
 
 type GetProps = {
 	request: FastifyRequest
@@ -29,7 +30,9 @@ const get = async ({ request, reply }: GetProps) => {
 			return reply.status(400).send(new Error('User not found!'))
 		}
 
-		return reply.status(200).send({ user: userExists })
+		const user = userWithoutPassword(userExists)
+
+		return reply.status(200).send(user)
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on get user!')
