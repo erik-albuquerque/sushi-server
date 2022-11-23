@@ -27,7 +27,7 @@ const get = async ({ request, reply }: RouterProps) => {
 
 		const user = userWithoutPassword(userExists)
 
-		return reply.status(200).send(user)
+		return reply.status(200).send({ user })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on get user!')

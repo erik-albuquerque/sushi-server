@@ -39,7 +39,7 @@ const create = async ({ request, reply }: RouterProps) => {
 			}
 		})
 
-		return reply.status(201).send(participant)
+		return reply.status(201).send({ participant })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Erro on create participant!')

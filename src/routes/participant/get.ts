@@ -58,7 +58,7 @@ const get = async ({ request, reply }: RouterProps) => {
 			}
 		}
 
-		return reply.status(200).send(participants)
+		return reply.status(200).send({ participants })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on get participants!')

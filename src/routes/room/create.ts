@@ -51,7 +51,7 @@ const create = async ({ request, reply }: RouterProps) => {
 			}
 		})
 
-		return reply.status(201).send(room)
+		return reply.status(201).send({ room })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on create a room!')

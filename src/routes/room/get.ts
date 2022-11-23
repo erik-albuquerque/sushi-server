@@ -24,7 +24,7 @@ const get = async ({ request, reply }: RouterProps) => {
 			return reply.status(400).send(new Error('Room not found!'))
 		}
 
-		return reply.status(200).send(room)
+		return reply.status(200).send({ room })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on get room!')
