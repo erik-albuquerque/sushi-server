@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma'
 import { RoomPropsUserWithRole, RouterProps, UserWithRole } from '../../types'
-import { userWithoutPassword, userWithRole } from '../../utils'
+import { exclude, userWithoutPassword, userWithRole } from '../../utils'
 
 const getAll = async ({ reply }: RouterProps) => {
 	const rooms: RoomPropsUserWithRole[] = []
@@ -75,7 +75,7 @@ const getAll = async ({ reply }: RouterProps) => {
 			}
 
 			const room = {
-				...roomData,
+				...exclude(roomData, ['trackQueue']),
 				owner,
 				participants,
 				queue,
@@ -85,7 +85,7 @@ const getAll = async ({ reply }: RouterProps) => {
 			rooms.push(room)
 		}
 
-		return reply.status(200).send(rooms)
+		return reply.status(200).send({ rooms })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on get all rooms!')
