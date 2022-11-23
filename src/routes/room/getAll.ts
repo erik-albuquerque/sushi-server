@@ -39,14 +39,32 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 				}
 			})
 
+			const userRole = await prisma.role.findFirst({
+				where: {
+					ownerId: room.ownerId
+				}
+			})
+
 			const users = usersData.map((user) => {
-				return {
-					id: user.id,
-					name: user.name,
-					username: user.username,
-					avatarUrl: user.avatarUrl,
-					createdAt: user.createdAt,
-					updatedAt: user.updatedAt
+				if (user.username === ownerData?.username) {
+					return {
+						id: user.id,
+						name: user.name,
+						username: user.username,
+						avatarUrl: user.avatarUrl,
+						role: userRole?.title,
+						createdAt: user.createdAt,
+						updatedAt: user.updatedAt
+					}
+				} else {
+					return {
+						id: user.id,
+						name: user.name,
+						username: user.username,
+						avatarUrl: user.avatarUrl,
+						createdAt: user.createdAt,
+						updatedAt: user.updatedAt
+					}
 				}
 			})
 
@@ -56,11 +74,11 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 				}
 			})
 
-			if (!queue) return reply.status(400).send(new Error('Queue not found!'))
+			// if (!queue) return reply.status(400).send(new Error('Queue not found!'))
 
 			const tracks = await prisma.track.findMany({
 				where: {
-					queueId: queue.id
+					queueId: queue?.id
 				}
 			})
 
@@ -69,6 +87,7 @@ const getAll = async ({ request, reply }: GetAllProps) => {
 				name: ownerData?.name,
 				username: ownerData?.username,
 				avatarUrl: ownerData?.avatarUrl,
+				role: userRole?.title,
 				createdAt: ownerData?.createdAt,
 				updatedAt: ownerData?.updatedAt
 			}

@@ -29,6 +29,20 @@ const onDelete = async ({ request, reply }: GetProps) => {
 			return reply.status(400).send(new Error('Room not found!'))
 		}
 
+		const userRole = await prisma.role.findFirst({
+			where: {
+				ownerId: roomExists.ownerId
+			}
+		})
+
+		if (userRole) {
+			await prisma.role.delete({
+				where: {
+					id: userRole.id
+				}
+			})
+		}
+
 		await prisma.room.delete({
 			where: {
 				id: roomId

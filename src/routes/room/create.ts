@@ -26,11 +26,18 @@ const create = async ({ request, reply }: CreateProps) => {
 			return reply.status(400).send(new Error('userId is required!'))
 		}
 
-		const roomData: Omit<Room, 'id'> = {
+		const roomData: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
 			title,
 			password: password ?? null,
 			ownerId: userId
 		}
+
+		await prisma.role.create({
+			data: {
+				title: 'user.sushiman',
+				ownerId: userId
+			}
+		})
 
 		const room = await prisma.room.create({
 			data: {
