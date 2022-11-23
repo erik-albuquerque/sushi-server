@@ -1,6 +1,8 @@
 import cors from '@fastify/cors'
+import formbody from '@fastify/formbody'
 import Fastify from 'fastify'
 import { roomRoutes, userRoutes } from './routes'
+import { participantRoutes } from './routes/participant'
 
 const fastify = Fastify({
 	logger: true
@@ -20,9 +22,13 @@ const bootstrap = async () => {
 		origin: true
 	})
 
-	fastify.register(userRoutes)
+	await fastify.register(formbody)
 
-	fastify.register(roomRoutes)
+	await fastify.register(userRoutes)
+
+	await fastify.register(roomRoutes)
+
+	await fastify.register(participantRoutes)
 
 	initServer()
 }

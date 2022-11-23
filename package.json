@@ -31,6 +31,7 @@
 	},
 	"dependencies": {
 		"@fastify/cors": "^8.2.0",
+		"@fastify/formbody": "^7.3.0",
 		"@prisma/client": "^4.6.1",
 		"fastify": "^4.10.0",
 		"fastify-plugin": "^4.3.0",
