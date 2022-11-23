@@ -1,13 +1,8 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
+import { RouterProps } from '../../types'
 
-type DeleteProps = {
-	request: FastifyRequest
-	reply: FastifyReply
-}
-
-const onDelete = async ({ request, reply }: DeleteProps) => {
+const onDelete = async ({ request, reply }: RouterProps) => {
 	const userIdParams = z.object({
 		userId: z.string()
 	})

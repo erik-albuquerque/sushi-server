@@ -1,13 +1,8 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
+import { RouterProps } from '../../types'
 
-type CreateProps = {
-	request: FastifyRequest
-	reply: FastifyReply
-}
-
-const create = async ({ request, reply }: CreateProps): Promise<void> => {
+const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	const createUserBody = z.object({
 		name: z.string(),
 		username: z.string(),

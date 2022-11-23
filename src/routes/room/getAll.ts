@@ -1,14 +1,8 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
 import { prisma } from '../../lib/prisma'
-import { RoomPropsUserWithRole, UserWithRole } from '../../types'
+import { RoomPropsUserWithRole, RouterProps, UserWithRole } from '../../types'
 import { userWithoutPassword, userWithRole } from '../../utils'
 
-type GetAllProps = {
-	request: FastifyRequest
-	reply: FastifyReply
-}
-
-const getAll = async ({ reply }: GetAllProps) => {
+const getAll = async ({ reply }: RouterProps) => {
 	const rooms: RoomPropsUserWithRole[] = []
 
 	try {

@@ -1,8 +1,7 @@
 import cors from '@fastify/cors'
 import formbody from '@fastify/formbody'
 import Fastify from 'fastify'
-import { roomRoutes, userRoutes } from './routes'
-import { participantRoutes } from './routes/participant'
+import { participantRoutes, roomRoutes, userRoutes } from './routes'
 
 const fastify = Fastify({
 	logger: true

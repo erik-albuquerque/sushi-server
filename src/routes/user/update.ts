@@ -1,14 +1,9 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
-import { isObjectEmpty } from '../../utils/isObjectEmpty'
+import { RouterProps } from '../../types'
+import { isObjectEmpty } from '../../utils'
 
-type UpdateProps = {
-	request: FastifyRequest
-	reply: FastifyReply
-}
-
-const update = async ({ request, reply }: UpdateProps): Promise<void> => {
+const update = async ({ request, reply }: RouterProps): Promise<void> => {
 	const updateUserBody = z.object({
 		name: z.string().optional(),
 		username: z.string().optional(),
