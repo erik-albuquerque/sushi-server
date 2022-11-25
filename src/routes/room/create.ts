@@ -2,6 +2,7 @@ import { Room } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { RouterProps } from '../../types'
+import { encrypt } from '../../utils'
 
 const create = async ({ request, reply }: RouterProps) => {
 	const createRoomBody = z.object({
@@ -22,13 +23,20 @@ const create = async ({ request, reply }: RouterProps) => {
 			private: isPrivate
 		} = createRoomBody.parse(request.body)
 
+		const encryptedPassword = password
+			? await encrypt({
+					str: password,
+					saltRounds: 10
+			  })
+			: null
+
 		if (!userId) {
 			return reply.status(400).send(new Error('userId is required!'))
 		}
 
 		const roomData: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
 			title,
-			password: password ?? null,
+			password: encryptedPassword,
 			private: isPrivate,
 			ownerId: userId
 		}
