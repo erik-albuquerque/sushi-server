@@ -6,7 +6,8 @@ import { RouterProps } from '../../types'
 const create = async ({ request, reply }: RouterProps) => {
 	const createRoomBody = z.object({
 		title: z.string(),
-		password: z.string().optional()
+		password: z.string().optional(),
+		private: z.boolean()
 	})
 
 	const userIdParams = z.object({
@@ -15,7 +16,11 @@ const create = async ({ request, reply }: RouterProps) => {
 
 	try {
 		const { userId } = userIdParams.parse(request.params)
-		const { title, password } = createRoomBody.parse(request.body)
+		const {
+			title,
+			password,
+			private: isPrivate
+		} = createRoomBody.parse(request.body)
 
 		if (!userId) {
 			return reply.status(400).send(new Error('userId is required!'))
@@ -24,6 +29,7 @@ const create = async ({ request, reply }: RouterProps) => {
 		const roomData: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
 			title,
 			password: password ?? null,
+			private: isPrivate,
 			ownerId: userId
 		}
 

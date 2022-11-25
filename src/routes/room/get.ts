@@ -1,7 +1,11 @@
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { RouterProps } from '../../types'
-import { userWithoutPassword, userWithRole } from '../../utils'
+import {
+	roomWithoutPassword,
+	userWithoutPassword,
+	userWithRole
+} from '../../utils'
 
 const get = async ({ request, reply }: RouterProps) => {
 	const roomIdParams = z.object({
@@ -78,7 +82,7 @@ const get = async ({ request, reply }: RouterProps) => {
 		}
 
 		const room = {
-			...roomData,
+			...roomWithoutPassword(roomData),
 			owner,
 			participants,
 			queue,

@@ -1,6 +1,11 @@
 import { prisma } from '../../lib/prisma'
 import { RoomPropsUserWithRole, RouterProps, UserWithRole } from '../../types'
-import { exclude, userWithoutPassword, userWithRole } from '../../utils'
+import {
+	exclude,
+	roomWithoutPassword,
+	userWithoutPassword,
+	userWithRole
+} from '../../utils'
 
 const getAll = async ({ reply }: RouterProps) => {
 	const rooms: RoomPropsUserWithRole[] = []
@@ -75,7 +80,7 @@ const getAll = async ({ reply }: RouterProps) => {
 			}
 
 			const room = {
-				...exclude(roomData, ['trackQueue']),
+				...roomWithoutPassword(exclude(roomData, ['trackQueue'])),
 				owner,
 				participants,
 				queue,
