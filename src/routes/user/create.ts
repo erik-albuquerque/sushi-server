@@ -14,6 +14,12 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	try {
 		const user = createUserBody.parse(request.body)
 
+		const { name, username, email, password } = user
+
+		if (!name || !username || !email || !password) {
+			return reply.status(400).send(new Error('All input is required!'))
+		}
+
 		const [userExists, emailAlreadyRegistered, usernameAlreadyRegistered] =
 			await prisma.$transaction([
 				prisma.user.findUnique({
