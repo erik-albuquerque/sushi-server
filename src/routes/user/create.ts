@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { RouterProps } from '../../types'
+import { encrypt } from '../../utils'
 
 const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	const createUserBody = z.object({
@@ -12,9 +13,13 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	})
 
 	try {
-		const user = createUserBody.parse(request.body)
+		const { name, username, email, password } = createUserBody.parse(
+			request.body
+		)
 
-		const { name, username, email, password } = user
+		const encryptedPassword = await encrypt({ str: password, saltRounds: 10 })
+
+		const user = { name, username, email, password: encryptedPassword }
 
 		if (!name || !username || !email || !password) {
 			return reply.status(400).send(new Error('All input is required!'))
@@ -43,15 +48,21 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 			])
 
 		if (userExists) {
-			return reply.status(409).send(new Error('User already exist!'))
+			return reply
+				.status(409)
+				.send(new Error('User already exist. Please login!'))
 		}
 
 		if (usernameAlreadyRegistered) {
-			return reply.status(409).send(new Error('Username already registered!'))
+			return reply
+				.status(409)
+				.send(new Error('Username already registered. Try another!'))
 		}
 
 		if (emailAlreadyRegistered) {
-			return reply.status(409).send(new Error('Email already registered!'))
+			return reply
+				.status(409)
+				.send(new Error('Email already registered. Try another!'))
 		}
 
 		await prisma.user.create({
@@ -61,7 +72,7 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 		return reply.status(201).send({ user })
 	} catch (error) {
 		console.log(error)
-		throw new Error('Error on create a new user!')
+		throw new Error('Error on create user!')
 	}
 }
 
