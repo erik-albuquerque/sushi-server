@@ -1,6 +1,6 @@
 import { HookHandlerDoneFunction } from 'fastify'
 import jwt from 'jsonwebtoken'
-import { RouterProps } from '../types'
+import { RouterProps, UserWithoutPassword } from '../types'
 import { env } from '../utils'
 
 type VerifyTokenProps = RouterProps & {
@@ -24,6 +24,8 @@ const verifyToken = ({ request, reply, done }: VerifyTokenProps) => {
 				.status(401)
 				.send(new Error('Something is wrong with the token!'))
 		}
+
+		request.user = decodedToken as UserWithoutPassword
 
 		done()
 	} catch (error) {

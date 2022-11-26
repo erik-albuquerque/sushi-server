@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { RouterProps } from '../../types'
-import { encrypt, generateToken } from '../../utils'
+import { encrypt, generateToken, userWithoutPassword } from '../../utils'
 
 const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	const createUserBody = z.object({
@@ -69,8 +69,10 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 			data: user
 		})
 
+		const userDataWithoutPassword = userWithoutPassword(userData)
+
 		const token = generateToken({
-			userData: { id: userData.id, email }
+			userData: userDataWithoutPassword
 		})
 
 		return reply.status(201).send({ user, token })

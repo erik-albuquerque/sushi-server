@@ -19,7 +19,7 @@ const routes = async (
 	// Router with Middleware
 	server.route({
 		method: 'POST',
-		url: `${apiPrefix}/rooms/:userId`,
+		url: `${apiPrefix}/rooms`,
 		preHandler: (request, reply, done) => verifyToken({ request, reply, done }),
 		handler: (request, reply) => create({ request, reply })
 	})
@@ -33,7 +33,7 @@ const routes = async (
 
 	server.route({
 		method: 'GET',
-		url: `${apiPrefix}/rooms/:userId`,
+		url: `${apiPrefix}/rooms/:roomId`,
 		preHandler: (request, reply, done) => verifyToken({ request, reply, done }),
 		handler: (request, reply) => get({ request, reply })
 	})

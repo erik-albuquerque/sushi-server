@@ -24,6 +24,12 @@ const onDelete = async ({ request, reply }: RouterProps) => {
 			return reply.status(400).send(new Error('User not found!'))
 		}
 
+		if (!(userExists.id === request.user.id)) {
+			return reply
+				.status(401)
+				.send(new Error(`Unauthorized! You don't seem to be the owner!`))
+		}
+
 		await prisma.user.delete({
 			where: {
 				id: userId

@@ -1,9 +1,9 @@
-import { User } from '@prisma/client'
 import jwt from 'jsonwebtoken'
+import { UserWithoutPassword } from '../types'
 import { env } from './env'
 
 type GenerateTokenProps = {
-	userData: Pick<User, 'id' | 'email'>
+	userData: UserWithoutPassword
 	expiresIn?: string
 }
 

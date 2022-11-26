@@ -49,6 +49,12 @@ const update = async ({ request, reply }: RouterProps): Promise<void> => {
 			return reply.status(400).send(new Error('User not found!'))
 		}
 
+		if (!(userExists.id === request.user.id)) {
+			return reply
+				.status(401)
+				.send(new Error(`Unauthorized! You don't seem to be the owner!`))
+		}
+
 		if (userExists.email === emailAlreadyRegistered?.email) {
 			return reply
 				.status(409)

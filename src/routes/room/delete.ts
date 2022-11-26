@@ -9,6 +9,7 @@ const onDelete = async ({ request, reply }: RouterProps) => {
 
 	try {
 		const { roomId } = roomIdParams.parse(request.params)
+		const userId = request.user.id
 
 		if (!roomId) {
 			return reply.status(400).send(new Error('roomId is required!'))
@@ -22,6 +23,12 @@ const onDelete = async ({ request, reply }: RouterProps) => {
 
 		if (!roomExists) {
 			return reply.status(400).send(new Error('Room not found!'))
+		}
+
+		if (!(roomExists.ownerId === userId)) {
+			return reply
+				.status(401)
+				.send(new Error(`Unauthorized! You don't seem to be the owner!`))
 		}
 
 		const userRole = await prisma.role.findFirst({

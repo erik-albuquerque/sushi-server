@@ -11,12 +11,15 @@ const create = async ({ request, reply }: RouterProps) => {
 		private: z.boolean()
 	})
 
-	const userIdParams = z.object({
-		userId: z.string()
-	})
-
 	try {
-		const { userId } = userIdParams.parse(request.params)
+		const user = request.user
+
+		const userId = user.id
+
+		if (!user || !userId) {
+			return reply.status(401).send(new Error('Unexpected error!'))
+		}
+
 		const {
 			title,
 			password,
@@ -29,10 +32,6 @@ const create = async ({ request, reply }: RouterProps) => {
 					saltRounds: 10
 			  })
 			: null
-
-		if (!userId) {
-			return reply.status(400).send(new Error('userId is required!'))
-		}
 
 		const roomData: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
 			title,
