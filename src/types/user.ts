@@ -1,4 +1,5 @@
 import { User } from '@prisma/client'
+import { JwtPayload } from 'jsonwebtoken'
 
 type UserWithoutPassword = Omit<User, 'password'>
 
@@ -6,4 +7,6 @@ type UserWithRole = UserWithoutPassword & {
 	role: string
 }
 
-export { UserWithoutPassword, UserWithRole }
+type UserDecodedToken = UserWithoutPassword & JwtPayload
+
+export { UserWithoutPassword, UserWithRole, UserDecodedToken }

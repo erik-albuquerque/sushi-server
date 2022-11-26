@@ -27,6 +27,8 @@ const verifyToken = ({ request, reply, done }: VerifyTokenProps) => {
 
 		request.user = decodedToken as UserWithoutPassword
 
+		request.headers.authorization = `Bearer ${token}`
+
 		done()
 	} catch (error) {
 		console.log(error)

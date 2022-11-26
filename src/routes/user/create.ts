@@ -71,11 +71,12 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 
 		const userDataWithoutPassword = userWithoutPassword(userData)
 
-		const token = generateToken({
-			userData: userDataWithoutPassword
+		const accessToken = generateToken({
+			userData: userDataWithoutPassword,
+			expiresIn: '1min'
 		})
 
-		return reply.status(201).send({ user, token })
+		return reply.status(201).send({ user, accessToken })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on create user!')

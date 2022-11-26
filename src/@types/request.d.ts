@@ -1,7 +1,7 @@
-import { UserWithoutPassword } from '../types'
+import { UserDecodedToken } from '../types'
 
 declare module 'fastify' {
 	interface FastifyRequest {
-		user: UserWithoutPassword
+		user: UserDecodedToken
 	}
 }
