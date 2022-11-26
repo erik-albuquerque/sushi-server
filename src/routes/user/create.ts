@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { RouterProps } from '../../types'
-import { encrypt } from '../../utils'
+import { encrypt, generateToken } from '../../utils'
 
 const create = async ({ request, reply }: RouterProps): Promise<void> => {
 	const createUserBody = z.object({
@@ -65,11 +65,15 @@ const create = async ({ request, reply }: RouterProps): Promise<void> => {
 				.send(new Error('Email already registered. Try another!'))
 		}
 
-		await prisma.user.create({
+		const userData = await prisma.user.create({
 			data: user
 		})
 
-		return reply.status(201).send({ user })
+		const token = generateToken({
+			userData: { id: userData.id, email }
+		})
+
+		return reply.status(201).send({ user, token })
 	} catch (error) {
 		console.log(error)
 		throw new Error('Error on create user!')

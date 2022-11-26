@@ -27,7 +27,7 @@ const onDelete = async ({ request, reply }: RouterProps) => {
 		return reply.status(202).send()
 	} catch (error) {
 		console.log(error)
-		throw new Error('Erro on delete participant!')
+		throw new Error('Error on delete participant!')
 	}
 }
 

@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import fp from 'fastify-plugin'
+import { verifyToken } from '../../middlewares'
 import { apiPrefix } from '../../utils'
 
 import { create } from './create'
@@ -7,18 +8,27 @@ import { onDelete } from './delete'
 import { get } from './get'
 
 const routes = async (server: FastifyInstance) => {
-	server.post(`${apiPrefix}/participants/:userId/:roomId`, (request, reply) =>
-		create({ request, reply })
-	)
+	// Router with Middleware
+	server.route({
+		method: 'GET',
+		url: `${apiPrefix}/participants/:roomId`,
+		preHandler: (request, reply, done) => verifyToken({ request, reply, done }),
+		handler: (request, reply) => get({ request, reply })
+	})
 
-	server.get(`${apiPrefix}/participants/:roomId`, (request, reply) =>
-		get({ request, reply })
-	)
+	server.route({
+		method: 'POST',
+		url: `${apiPrefix}/participants/:userId/:roomId`,
+		preHandler: (request, reply, done) => verifyToken({ request, reply, done }),
+		handler: (request, reply) => create({ request, reply })
+	})
 
-	server.delete(
-		`${apiPrefix}/participants/delete/:userId/:roomId`,
-		(request, reply) => onDelete({ request, reply })
-	)
+	server.route({
+		method: 'DELETE',
+		url: `${apiPrefix}/participants/delete/:userId/:roomId`,
+		preHandler: (request, reply, done) => verifyToken({ request, reply, done }),
+		handler: (request, reply) => onDelete({ request, reply })
+	})
 }
 
 const participantRoutes = fp(routes)

@@ -1,5 +1,6 @@
 import cors from '@fastify/cors'
 import formbody from '@fastify/formbody'
+import 'dotenv/config'
 import Fastify from 'fastify'
 import {
 	participantRoutes,
